@@ -1,4 +1,4 @@
-#🎮 mcMMO for Minecraft
+###🎮 mcMMO for Minecraft
 
 🚀 핵심 기능 (Key Features)
 1. 4대 전문 스킬 (Core Skills)
