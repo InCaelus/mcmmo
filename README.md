@@ -1,5 +1,6 @@
 #  🎮 mcMMO for Minecraft
 
+<pre>
 🚀 핵심 기능 (Key Features)</br>
 1. 4대 전문 스킬 (Core Skills)</br>
 모든 스킬은 전용 도구를 착용했을 때만 활성화되며, 레벨에 따라 능력이 선형적으로 강화된다.</br>
@@ -38,3 +39,4 @@
 
 ⚠️ 주의사항</br>
 - 본 플러그인은 MySQL 데이터베이스 연동이 필수입니다. jar 파일을 빌드하기 전, 반드시 McMMO.java 파일의 20번 라인을 확인하세요(localhost: 본인의 DB 주소로 수정 & your password 부분을 본인 DB 비밀번호로 수정하세요)</br>
+</pre>
