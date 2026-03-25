@@ -50,7 +50,8 @@ public class ExcavationListener implements Listener {
 
     private boolean isDiggable(Material m) {
         String n = m.name();
-        return n.contains("DIRT") || n.contains("SAND") || n.equals("GRAVEL") || n.equals("CLAY");
+        return n.contains("DIRT") || n.contains("SAND") || n.equals("GRAVEL") ||
+                n.equals("CLAY") || n.equals("GRASS_BLOCK"); // 잔디 추가
     }
 
     private void sendActionBar(Player p, SkillType t, double g, PlayerData d) {
