@@ -39,4 +39,10 @@
 
 ⚠️ 주의사항</br>
 - 본 플러그인은 MySQL 데이터베이스 연동이 필수입니다. jar 파일을 빌드하기 전, 반드시 McMMO.java 파일의 20번 라인을 확인하세요(localhost: 본인의 DB 주소로 수정 & your password 부분을 본인 DB 비밀번호로 수정하세요)</br>
+
+------------------------------------------------------------------------
+Project Lead: Incaelus
+
+Development Environment: IntelliJ IDEA, Java 21, Paper/Spigot API 1.21.1
+-------------------------------------------------------------------------
 </pre>

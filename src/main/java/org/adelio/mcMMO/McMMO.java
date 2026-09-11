@@ -15,7 +15,7 @@ public class McMMO extends JavaPlugin {
     public void onEnable() {
 
         dataManager = new DataManager();
-        dataManager.init("localhost", "mcmmo", "root", "your password");
+        dataManager.init("localhost:3306", "mcmmo", "root", "10234907");
 
         var pm = getServer().getPluginManager();
 

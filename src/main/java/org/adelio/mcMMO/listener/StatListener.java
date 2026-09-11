@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,58 +19,87 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatListener implements Listener {
-
     private final DataManager dataManager;
-    private static final String GUI_TITLE = "§8[ mcMMO 스탯 정보 ]";
+    private static final String GUI_TITLE = "§8[ mcMMO 캐릭터 정보 ]";
 
-    public StatListener(DataManager dataManager) {
-        this.dataManager = dataManager;
+    public StatListener(DataManager dataManager) { this.dataManager = dataManager; }
+
+    @EventHandler
+    public void onShiftF(PlayerSwapHandItemsEvent event) {
+        Player p = event.getPlayer();
+        if (p.isSneaking()) {
+            event.setCancelled(true);
+            openGUI(p);
+        }
     }
 
     public void openGUI(Player player) {
-        Inventory gui = Bukkit.createInventory(null, 9, Component.text(GUI_TITLE));
+        Inventory gui = Bukkit.createInventory(null, 45, Component.text(GUI_TITLE));
         PlayerData data = dataManager.getPlayerManager().getPlayerData(player.getUniqueId());
-
         if (data == null) return;
 
-        gui.setItem(1, createSkillItem(Material.DIAMOND_PICKAXE, SkillType.MINING, data, "§b3x3 채광 & 추가 드랍"));
-        gui.setItem(3, createSkillItem(Material.DIAMOND_AXE, SkillType.WOODCUTTING, data, "§6트리 펠러 (웅크리기)"));
-        gui.setItem(5, createSkillItem(Material.DIAMOND_SHOVEL, SkillType.EXCAVATION, data, "§e보물 발견 확률 증가"));
-        gui.setItem(7, createSkillItem(Material.DIAMOND_SWORD, SkillType.COMBAT, data, "§c레벨당 데미지 & 크리티컬"));
+        ItemStack glass = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta gMeta = glass.getItemMeta();
+        gMeta.displayName(Component.text(" "));
+        glass.setItemMeta(gMeta);
+        for (int i = 0; i < 45; i++) gui.setItem(i, glass);
+
+        gui.setItem(13, createInfoItem(player.getName()));
+
+        gui.setItem(28, createSkillItem(Material.DIAMOND_SWORD, "전투", data, SkillType.COMBAT));
+        gui.setItem(30, createSkillItem(Material.DIAMOND_PICKAXE, "채광", data, SkillType.MINING));
+        gui.setItem(32, createSkillItem(Material.DIAMOND_AXE, "벌목", data, SkillType.WOODCUTTING));
+        gui.setItem(34, createSkillItem(Material.DIAMOND_SHOVEL, "삽질", data, SkillType.EXCAVATION));
 
         player.openInventory(gui);
     }
 
-    private ItemStack createSkillItem(Material m, SkillType type, PlayerData data, String abilityDesc) {
+    private ItemStack createInfoItem(String name) {
+        ItemStack item = new ItemStack(Material.NETHER_STAR);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(Component.text("§b§l" + name + "님의 모험 요약"));
+        List<Component> lore = new ArrayList<>();
+        lore.add(Component.text("§7현재 습득한 기술 레벨을 확인합니다."));
+        meta.lore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private ItemStack createSkillItem(Material m, String name, PlayerData data, SkillType type) {
         ItemStack item = new ItemStack(m);
         ItemMeta meta = item.getItemMeta();
-        if (meta == null) return item;
+        meta.displayName(Component.text("§e§l" + name + " 스탯"));
 
-        meta.displayName(Component.text("§e§l" + type.getName()));
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("§f레벨: §a" + data.getLevel(type)));
-        lore.add(Component.text("§f경험치: §7" + String.format("%.1f", data.getExp(type)) + " / " + (data.getLevel(type) * 100)));
-        lore.add(Component.text(""));
-        lore.add(Component.text("§7[ 고유 능력 ]"));
-        lore.add(Component.text(abilityDesc));
+        int level = data.getLevel(type);
+        double currentExp = data.getExp(type);
+        double maxExp = level * 100.0;
+
+        lore.add(Component.text("§f현재 레벨: §a" + level));
+        lore.add(Component.text("§f경험치: §7" + String.format("%.1f", currentExp) + " / " + maxExp));
+
+        lore.add(Component.text(getProgressBar(currentExp, maxExp)));
 
         meta.lore(lore);
         item.setItemMeta(meta);
         return item;
     }
 
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getView().title().toString().contains(GUI_TITLE) ||
-                event.getView().getTitle().equals(GUI_TITLE)) {
-
-            event.setCancelled(true);
+    private String getProgressBar(double current, double max) {
+        int bars = 10;
+        int filled = (int) ((current / max) * bars);
+        StringBuilder sb = new StringBuilder("§8[");
+        for (int i = 0; i < bars; i++) {
+            if (i < filled) sb.append("§b■");
+            else sb.append("§7□");
         }
+        sb.append("§8]");
+        return sb.toString();
     }
 
     @EventHandler
-    public void onInventoryDrag(InventoryDragEvent event) {
-        if (event.getView().getTitle().equals(GUI_TITLE)) {
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getView().title().toString().contains(GUI_TITLE)) {
             event.setCancelled(true);
         }
     }

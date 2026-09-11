@@ -57,7 +57,7 @@ public class CombatListener implements Listener {
         if (data == null) return;
 
         double killXp = switch (victim.getType()) {
-            case ENDER_DRAGON -> 500.0;
+            case ENDER_DRAGON -> 1000.0;
             case WITHER -> 300.0;
             case WARDEN -> 200.0;
             case ENDERMAN -> 15.0;
