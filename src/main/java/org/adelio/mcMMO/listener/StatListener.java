@@ -23,7 +23,7 @@ public class StatListener implements Listener {
     private static final String GUI_TITLE = "§8[ mcMMO 캐릭터 정보 ]";
 
     public StatListener(DataManager dataManager) { this.dataManager = dataManager; }
-    
+
     @EventHandler
     public void onShiftF(PlayerSwapHandItemsEvent event) {
         Player p = event.getPlayer();
